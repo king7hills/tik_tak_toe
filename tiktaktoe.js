@@ -51,24 +51,21 @@ const gameBoard = {
     setWinStatus: function (marker) {
         const threeMarks = marker.repeat(3);
 
+        let row = '';
+        let column = '';
         for (let i = 0; i < this.rows; i++) {
             //row win condition
-            let sameRowValues = this.board[i].join('');
-            if (sameRowValues == threeMarks)
-            {return this.winStatus = true;};
+            row = this.board[i].join('');
+            console.log(row);
+            
+            column = this.board[0][i] + this.board[1][i] + this.board[2][i];
+            console.log(column);
+            if (row == threeMarks || column == threeMarks) {
+                return this.winStatus = true;
+            };
         };
 
-            //column win condition
-        let column1 = '';
-        let column2 = '';
-        let column3 = '';
-        column1 = this.board[0][0] + this.board[0][1] + this.board[0][2];
-        column2 = this.board[1][0] + this.board[1][1] + this.board[1][2];
-        column3 = this.board[2][0] + this.board[2][1] + this.board[2][2];
         
-        if (column1 == threeMarks || column2 == threeMarks || column3 == threeMarks)
-            {return this.winStatus = true;
-        } else {};
         
         //diagonal win conditions
         let diagonal1 = this.board[1][1]+this.board[0][0]+this.board[2][2];
@@ -76,7 +73,7 @@ const gameBoard = {
 
         if (diagonal1 == threeMarks || diagonal2 == threeMarks) {
             return this.winStatus = true;
-        };
+        } else return {};
     },
 
     checkForWin: function (marker) {
