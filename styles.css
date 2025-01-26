@@ -11,7 +11,7 @@ h1 {
 }
 
 
-.color_picker {
+.player_color_picker {
     height: 1.5em;
     width: 1.5em;
     overflow: hidden;
@@ -21,7 +21,7 @@ h1 {
     position: relative;
 }
 
-.color_picker > input {
+.player_color_picker > input {
     position: absolute;
     height: 4em;
     width: 4em;
@@ -32,4 +32,10 @@ h1 {
     border: none;
     margin: 0;
     padding: 0;
+}
+
+@media (orientation: landscape) {
+    .player_section {
+        transform: rotate(90deg);
+    }
 }
