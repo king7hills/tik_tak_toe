@@ -1,19 +1,10 @@
-// const test =  (function() {
-//     let testString = 'Here is a test for you';
-
-//     function sayString() {
-//         alert(testString);
-//     }
-
-//     return {
-//         sayString: sayString
-//     }
-// })()
 
 const gameBoard = {
     board: [],
     rows: 3,
     columns: 3,
+    turnSuccess: false,
+    winStatus: false,
 
     createBoard: function () {
     for (let i = 0; i < this.rows; i++) {
@@ -21,14 +12,15 @@ const gameBoard = {
         for (let j = 0; j < this.columns; j++) {
             this.board[i][j] = '';
         }}
+
+    this.turnSuccess = false;  
+    this.winStatus = false; // Resets the game entirely. Missing this led to false win condition failure testing multiple games (DUH!)
     this.render();
     },
     
     render: function () {
         console.log(this.board);
     },
-
-    turnSuccess: false,
 
     getSuccess: function () {
         return this.turnSuccess;
@@ -46,8 +38,6 @@ const gameBoard = {
         }
     },
 
-    winStatus: false,
-
     setWinStatus: function (marker) {
         const threeMarks = marker.repeat(3);
 
@@ -56,10 +46,9 @@ const gameBoard = {
         for (let i = 0; i < this.rows; i++) {
             //row win condition
             row = this.board[i].join('');
-            console.log(row);
             
             column = this.board[0][i] + this.board[1][i] + this.board[2][i];
-            console.log(column);
+
             if (row == threeMarks || column == threeMarks) {
                 return this.winStatus = true;
             };
@@ -73,7 +62,7 @@ const gameBoard = {
 
         if (diagonal1 == threeMarks || diagonal2 == threeMarks) {
             return this.winStatus = true;
-        } else return {};
+        }
     },
 
     checkForWin: function (marker) {
@@ -102,7 +91,7 @@ function playGame(player1Name, player2Name) {
             nextTurn();
         } else if (turnCount >= 5 && turnCount < 9) {
             winStatus = gameBoard.checkForWin(marker);
-            console.log(winStatus);
+
             if (winStatus == false) {
                 nextTurn();
             } else if (winStatus == true) {
