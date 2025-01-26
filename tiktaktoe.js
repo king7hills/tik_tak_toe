@@ -11,7 +11,8 @@ const gameBoard = {
         this.board[i] = [];
         for (let j = 0; j < this.columns; j++) {
             this.board[i][j] = '';
-        }}
+        }
+    }
 
     this.turnSuccess = false;  
     this.winStatus = false; // Resets the game entirely. Missing this led to false win condition failure testing multiple games (DUH!)
@@ -73,20 +74,20 @@ const gameBoard = {
 
 
 
-function playGame(player1Name, player2Name) {
-    const player = function Player (name, marker) {
+const gamePlay = {
+    player: function Player (name, marker) {
         this.name = name;
         this.marker = marker;
-    };
+    },
 
-    const player1 = new player(player1Name, 'X');
-    const player2 = new player(player2Name, 'O');
-
-    let turnCount = 0;
-    let winStatus = false;
+    player1: new player(player1Name, 'X'),
+    player2: new player(player2Name, 'O'),
+    
+    turnCount: 0,
+    winStatus: false,
 
     //Limits running win check until someone can possibly win
-    function checkTurn (marker) {
+    checkTurn: function (marker) {
         if (turnCount < 5) {
             nextTurn();
         } else if (turnCount >= 5 && turnCount < 9) {
@@ -104,41 +105,89 @@ function playGame(player1Name, player2Name) {
                 endGame(false);
             }
         };
-    };
+    },
 
-    let lastTurn = '';
+    lastTurn: '',
 
     //turn logic
-    function nextTurn () {
+    nextTurn: function () {
         if (lastTurn == '' || lastTurn == player2.name) {
             takeTurn(player1);
         } else if (lastTurn == player1.name) {
             takeTurn(player2);
         };
-    };
+    },
 
-    function endGame (value) {
+    takeTurn: function (player) {
+        console.log(`${player.name}'s turn.`);
+        display.messageLine.textContent = `${player.name}'s turn.`;
+        if (display.clickStatus == true) 
+            {let coordinates = prompt("Input position separated by comma (1-3,1-3): ");
+            const turnCoordinates = coordinates.split(',');
+
+            gameBoard.mark(turnCoordinates[0], turnCoordinates[1], player.marker);
+            const status = gameBoard.getSuccess();
+            if (status == true) {
+                turnCount++;
+                lastTurn = player.name;
+                checkTurn(player.marker);
+            } else if (status == false) {
+                display.clickStatus = false;
+                takeTurn(player);
+            }
+        }
+    },
+
+    endGame: function (value) {
         if (value == true) {
             console.log(`Game over. ${lastTurn} wins!`)
         } else console.log('Game over. Cat game! No winners!');
+    },
+
+    start: function () {
+        gameBoard.createBoard()
+        nextTurn()}
+}
+
+// Display Logic
+const display = {
+    coordinates: '',
+    cell: '',
+    allCells: document.querySelectorAll('#cell'),
+    messageLine: document.querySelector('text_display_text'),
+    player1Name: document.querySelector('#player1').value,
+    player2Name: document.querySelector('#player2').value,
+
+    bindCoordinates: function () {
+        this.coordinates.bind(display) = this.id;
+    },
+
+    primeCells: function(cells) {
+        cells.forEach((cell) => {
+            cell.addEventListener('click', () => {
+                
+            })
+        })
+    },
+
+    fetchCell: function (position) {
+        this.cell = this.document.querySelector(`#${position}`)
+    },
+
+    markCell: function (cell, marker) {
+        cell.textContent = marker;
+    },
+
+    updateCell: function (marker) {
+        this.markCell(this.cell, marker)
+    },
+    
+    executeClick: function () {
+        this.bindCoordinates();
+        
     }
 
-    function takeTurn (player) {
-        console.log(`${player.name}'s turn.`);
-        let coordinates = prompt("Input position separated by comma (1-3,1-3): ");
-        const turnCoordinates = coordinates.split(',');
+    
 
-        gameBoard.mark(turnCoordinates[0], turnCoordinates[1], player.marker);
-        const status = gameBoard.getSuccess();
-        if (status == true) {
-            turnCount++;
-            lastTurn = player.name;
-            checkTurn(player.marker);
-        } else if (status == false) {
-            takeTurn(player);
-        }
-    };
 
-    gameBoard.createBoard()
-    nextTurn();
 }
