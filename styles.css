@@ -1,15 +1,51 @@
+* {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
 h1 {
     font-size: x-large;
     color: green;
     background-color: bisque;
 }
 
+.game_board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.row {
+    display: flex;
+}
+
+.mid_row {
+    border-top: 0.85rem solid black;
+    border-bottom: 0.85rem solid black;
+}
+
+.cell {
+    min-width: 1rem;
+    padding: min(5vw);
+    background-color: whitesmoke;
+}
+
+.mid_cell {
+    border-left: 0.85rem solid black;
+    border-right: 0.85rem solid black;
+}
+
+.player_section {
+    display: grid;
+    grid-auto-flow: column;
+}
 
 .player_name > input {
     border: none;
     background: transparent;
 }
-
 
 .player_color_picker {
     height: 1.5em;
@@ -33,9 +69,3 @@ h1 {
     margin: 0;
     padding: 0;
 }
-
-/* @media (orientation: landscape) {
-    .player_section, .text_display {
-        transform: rotate(90deg);
-    }
-} */
