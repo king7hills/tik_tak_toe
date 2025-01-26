@@ -36,6 +36,7 @@ const gameBoard = {
         } else {
             this.turnSuccess = false;
             console.log("Try another position");
+            display.messageLine = `Try again ${gamePlay.activePlayer.name}`;
         }
     },
 
@@ -80,8 +81,8 @@ const gamePlay = {
         this.marker = marker;
     },
 
-    player1: new player(player1Name, 'X'),
-    player2: new player(player2Name, 'O'),
+    player1: new player(display.player1Name, 'X'),
+    player2: new player(display.player2Name, 'O'),
     
     turnCount: 0,
     winStatus: false,
@@ -110,43 +111,54 @@ const gamePlay = {
     lastTurn: '',
 
     //turn logic
+    activePlayer: '',
+
     nextTurn: function () {
-        if (lastTurn == '' || lastTurn == player2.name) {
-            takeTurn(player1);
-        } else if (lastTurn == player1.name) {
-            takeTurn(player2);
+        if (lastTurn == '' || lastTurn == this.player2.name) {
+            this.activePlayer = this.player1;
+            this.turnMessage(this.activePlayer);
+        } else if (lastTurn == this.player1.name) {
+            this.activePlayer = this.player2;
+            this.turnMessage(this.activePlayer);
         };
     },
 
-    takeTurn: function (player) {
+    turnMessage: function(player) {
         console.log(`${player.name}'s turn.`);
-        display.messageLine.textContent = `${player.name}'s turn.`;
-        if (display.clickStatus == true) 
-            {let coordinates = prompt("Input position separated by comma (1-3,1-3): ");
-            const turnCoordinates = coordinates.split(',');
-
-            gameBoard.mark(turnCoordinates[0], turnCoordinates[1], player.marker);
-            const status = gameBoard.getSuccess();
-            if (status == true) {
-                turnCount++;
-                lastTurn = player.name;
-                checkTurn(player.marker);
-            } else if (status == false) {
-                display.clickStatus = false;
-                takeTurn(player);
-            }
+        display.messageLine = `${player.name}'s turn.`;
+    },
+    
+    takeTurn: function (player) {
+        let coordinates = display.coordinates;
+        display.fetchCell(coordinates);
+        const turnCoordinates = coordinates.split(',');
+        gameBoard.mark(turnCoordinates[0], turnCoordinates[1], player.marker);
+        const status = gameBoard.getSuccess();
+        if (status == true) {
+            display.updateCell(player.marker);
+            turnCount++;
+            lastTurn = player.name;
+            checkTurn(player.marker);
+        } else if (status == false) {
+            //takeTurn(player);
         }
     },
 
     endGame: function (value) {
         if (value == true) {
-            console.log(`Game over. ${lastTurn} wins!`)
-        } else console.log('Game over. Cat game! No winners!');
+            console.log(`Game over. ${this.lastTurn} wins!`);
+            display.messageLine = `Game over. ${this.lastTurn} wins!`;
+        } else {
+            console.log('Game over. Cat game! No winners!');
+            display.messageLine = 'Game over. Cat game! No winners!';
+        }
     },
 
     start: function () {
-        gameBoard.createBoard()
-        nextTurn()}
+        gameBoard.createBoard();
+        display.primeCells(display.allCells);
+        this.nextTurn();
+    }
 }
 
 // Display Logic
@@ -154,9 +166,10 @@ const display = {
     coordinates: '',
     cell: '',
     allCells: document.querySelectorAll('#cell'),
-    messageLine: document.querySelector('text_display_text'),
+    messageLine: document.querySelector('text_display_text').textContent,
     player1Name: document.querySelector('#player1').value,
     player2Name: document.querySelector('#player2').value,
+    clickStatus: false,
 
     bindCoordinates: function () {
         this.coordinates.bind(display) = this.id;
@@ -184,7 +197,8 @@ const display = {
     
     executeClick: function () {
         this.bindCoordinates();
-        
+        this.clickStatus = true;
+        gamePlay.takeTurn(gamePlay.activePlayer);
     }
 
     
