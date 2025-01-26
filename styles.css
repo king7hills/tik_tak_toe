@@ -3,3 +3,33 @@ h1 {
     color: green;
     background-color: bisque;
 }
+
+
+.player_name > input {
+    border: none;
+    background: transparent;
+}
+
+
+.color_picker {
+    height: 1.5em;
+    width: 1.5em;
+    overflow: hidden;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+
+.color_picker > input {
+    position: absolute;
+    height: 4em;
+    width: 4em;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
