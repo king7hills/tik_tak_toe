@@ -34,8 +34,8 @@ h1 {
     padding: 0;
 }
 
-@media (orientation: landscape) {
-    .player_section {
+/* @media (orientation: landscape) {
+    .player_section, .text_display {
         transform: rotate(90deg);
     }
-}
+} */
