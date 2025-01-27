@@ -30,6 +30,7 @@ h1 {
     min-width: 1rem;
     padding: min(5vw);
     background-color: whitesmoke;
+    color: black;
 }
 
 .mid_cell {
