@@ -7,3 +7,10 @@ Moving forward, I must keep better git commits and records. I see it's value in 
 Learned the hard way the importance of proper syntax.
 IDs cannot have commas in them. Going forward, if I ever need to do something similar, I will use hyphens
 and adjust my code accordingly. Ugh.
+
+Began by creating the game logic within the console. Then had to convert all game logic into a GUI based input system.
+I originally created the gameplay module as a function. I then converted to have three modules initiated by clicking a
+start game button. The button appears after each game and hides during gameplay.
+
+Styling is geared towards mobile use, but works well on Desktop too.
+To play on mobile, simply rotate your phone.
