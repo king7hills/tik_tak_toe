@@ -15,6 +15,7 @@ const display = {
                     display.coordinates = div.id;
                     gamePlay.takeTurn(gamePlay.activePlayer);
                 })
+
             })
         };
 
@@ -28,10 +29,22 @@ const display = {
 
     markCell: function (cell, marker) {
         cell.textContent = marker;
+        if (marker == 'X') {
+            var colorInput = document.querySelector('#player1_color');
+            cell.style.color = colorInput.value;
+        } else if (marker == 'O') {
+            var colorInput = document.querySelector('#player2_color');
+            cell.style.color = colorInput.value;
+        };
     },
 
     updateCell: function (marker) {
         this.markCell(this.cell, marker)
+    },
+
+    colorPlayerMarker: function () {
+        
+
     }
 };
 
