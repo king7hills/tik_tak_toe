@@ -11,6 +11,7 @@ const display = {
     init: function () {
         function primeCells (cells) {
             cells.forEach((div) => {
+                div.textContent = '';
                 div.addEventListener('click', () => {
                     display.coordinates = div.id;
                     gamePlay.takeTurn(gamePlay.activePlayer);
@@ -41,11 +42,6 @@ const display = {
     updateCell: function (marker) {
         this.markCell(this.cell, marker)
     },
-
-    colorPlayerMarker: function () {
-        
-
-    }
 };
 
 // Game board logic
@@ -207,7 +203,26 @@ const gamePlay = {
         } else {
             console.log('Game over. Cat game! No winners!');
             display.messageLine.textContent = 'Game over. Cat game! No winners!';
-        }
+        };
+        this.showDialog();
     },
+
+    dialog: document.querySelector('.start'),
+    startButton: document.querySelector('#start_button'),
+    
+    closeDialog: function () {
+        this.dialog.close();
+    },
+
+    showDialog: function () {
+        this.dialog.show();
+        this.startButton.addEventListener("click", () => {
+            this.start();
+            this.closeDialog();
+        })
+    },
+    
+
 }
 
+gamePlay.showDialog();
