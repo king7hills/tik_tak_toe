@@ -172,12 +172,9 @@ const gamePlay = {
     },
     
     takeTurn: function (player) {
-        console.log(display.coordinates);
         let coordinates = display.coordinates;
-        console.log("Stored coordinates:", coordinates);
         display.fetchCell(coordinates);
         const turnCoordinates = coordinates.split('-');
-        console.log(turnCoordinates);
         gameBoard.mark(turnCoordinates[1], turnCoordinates[2], player.marker);
         const status = gameBoard.getSuccess();
         if (status == true) {
