@@ -1,4 +1,41 @@
 
+// Display Logic
+const display = {
+    allCells: document.querySelectorAll('.cell'),
+    messageLine: document.querySelector('.text_display_text'),
+    player1Name: document.querySelector('#player1').value,
+    player2Name: document.querySelector('#player2').value,
+    coordinates: '',
+    cell: '',
+
+    init: function () {
+        function primeCells (cells) {
+            cells.forEach((div) => {
+                div.addEventListener('click', () => {
+                    display.coordinates = div.id;
+                    gamePlay.takeTurn(gamePlay.activePlayer);
+                })
+            })
+        };
+
+        primeCells(this.allCells);
+    },
+    
+
+    fetchCell: function (position) {
+        this.cell = document.querySelector(`#${position}`)
+    },
+
+    markCell: function (cell, marker) {
+        cell.textContent = marker;
+    },
+
+    updateCell: function (marker) {
+        this.markCell(this.cell, marker)
+    }
+};
+
+// Game board logic
 const gameBoard = {
     board: [],
     rows: 3,
@@ -28,15 +65,15 @@ const gameBoard = {
     },
     
     mark: function(row, column, marker) {
-        var position = this.board[row-1][column-1];
+        var position = this.board[row][column];
         if (position == "") {
-            this.board[row-1][column-1] = marker;
+            this.board[row][column] = marker;
             this.render();
             this.turnSuccess = true;
         } else {
             this.turnSuccess = false;
             console.log("Try another position");
-            display.messageLine = `Try again ${gamePlay.activePlayer.name}`;
+            display.messageLine.textContent = `Try again ${gamePlay.activePlayer.name}`;
         }
     },
 
@@ -70,75 +107,84 @@ const gameBoard = {
     checkForWin: function (marker) {
         this.setWinStatus(marker);
         return this.winStatus;
-    }
+    },
 };
 
-
-
+// Game mechanics
 const gamePlay = {
-    player: function Player (name, marker) {
+    Player: function (name, marker) {
         this.name = name;
         this.marker = marker;
     },
 
-    player1: new player(display.player1Name, 'X'),
-    player2: new player(display.player2Name, 'O'),
-    
-    turnCount: 0,
-    winStatus: false,
+    init: function() {
+        this.player1 = new this.Player(display.player1Name, 'X');
+        this.player2 = new this.Player(display.player2Name, 'O');
 
-    //Limits running win check until someone can possibly win
-    checkTurn: function (marker) {
-        if (turnCount < 5) {
-            nextTurn();
-        } else if (turnCount >= 5 && turnCount < 9) {
-            winStatus = gameBoard.checkForWin(marker);
-
-            if (winStatus == false) {
-                nextTurn();
-            } else if (winStatus == true) {
-                endGame(true);
-            }
-        } else if (turnCount == 9) {
-            if (winStatus == true) {
-                endGame(true);
-            } else if (winStatus == false) {
-                endGame(false);
-            }
-        };
+        this.turnCount = 0;
+        this.winStatus = false;
+        this.lastTurn = '';
+        this.activePlayer= '';
     },
 
-    lastTurn: '',
-
+    start: function () {
+        this.init();
+        display.init();
+        gameBoard.createBoard()
+        this.nextTurn();
+    },
+ 
     //turn logic
-    activePlayer: '',
-
     nextTurn: function () {
-        if (lastTurn == '' || lastTurn == this.player2.name) {
+        if (this.lastTurn == '' || this.lastTurn == this.player2.name) {
             this.activePlayer = this.player1;
             this.turnMessage(this.activePlayer);
-        } else if (lastTurn == this.player1.name) {
+        } else if (this.lastTurn == this.player1.name) {
             this.activePlayer = this.player2;
             this.turnMessage(this.activePlayer);
         };
     },
 
+    //Limits running win check until someone can possibly win
+    checkTurn: function (marker) {
+        if (this.turnCount < 5) {
+            this.nextTurn();
+        } else if (this.turnCount >= 5 && this.turnCount < 9) {
+            this.winStatus = gameBoard.checkForWin(marker);
+
+            if (this.winStatus == false) {
+                this.nextTurn();
+            } else if (this.winStatus == true) {
+                this.endGame(true);
+            }
+        } else if (this.turnCount == 9) {
+            if (this.winStatus == true) {
+                this.endGame(true);
+            } else if (this.winStatus == false) {
+                this.endGame(false);
+            }
+        };
+    },
+
     turnMessage: function(player) {
         console.log(`${player.name}'s turn.`);
-        display.messageLine = `${player.name}'s turn.`;
+        display.messageLine.textContent = `${player.name}'s turn.`;
     },
     
     takeTurn: function (player) {
+        console.log(display.coordinates);
         let coordinates = display.coordinates;
+        console.log("Stored coordinates:", coordinates);
         display.fetchCell(coordinates);
-        const turnCoordinates = coordinates.split(',');
-        gameBoard.mark(turnCoordinates[0], turnCoordinates[1], player.marker);
+        const turnCoordinates = coordinates.split('-');
+        console.log(turnCoordinates);
+        gameBoard.mark(turnCoordinates[1], turnCoordinates[2], player.marker);
         const status = gameBoard.getSuccess();
         if (status == true) {
             display.updateCell(player.marker);
-            turnCount++;
-            lastTurn = player.name;
-            checkTurn(player.marker);
+            this.turnCount++;
+            this.lastTurn = player.name;
+            this.checkTurn(player.marker);
         } else if (status == false) {
             //takeTurn(player);
         }
@@ -147,61 +193,11 @@ const gamePlay = {
     endGame: function (value) {
         if (value == true) {
             console.log(`Game over. ${this.lastTurn} wins!`);
-            display.messageLine = `Game over. ${this.lastTurn} wins!`;
+            display.messageLine.textContent = `Game over. ${this.lastTurn} wins!`;
         } else {
             console.log('Game over. Cat game! No winners!');
-            display.messageLine = 'Game over. Cat game! No winners!';
+            display.messageLine.textContent = 'Game over. Cat game! No winners!';
         }
     },
-
-    start: function () {
-        gameBoard.createBoard();
-        display.primeCells(display.allCells);
-        this.nextTurn();
-    }
 }
 
-// Display Logic
-const display = {
-    coordinates: '',
-    cell: '',
-    allCells: document.querySelectorAll('#cell'),
-    messageLine: document.querySelector('text_display_text').textContent,
-    player1Name: document.querySelector('#player1').value,
-    player2Name: document.querySelector('#player2').value,
-    clickStatus: false,
-
-    bindCoordinates: function () {
-        this.coordinates.bind(display) = this.id;
-    },
-
-    primeCells: function(cells) {
-        cells.forEach((cell) => {
-            cell.addEventListener('click', () => {
-                
-            })
-        })
-    },
-
-    fetchCell: function (position) {
-        this.cell = this.document.querySelector(`#${position}`)
-    },
-
-    markCell: function (cell, marker) {
-        cell.textContent = marker;
-    },
-
-    updateCell: function (marker) {
-        this.markCell(this.cell, marker)
-    },
-    
-    executeClick: function () {
-        this.bindCoordinates();
-        this.clickStatus = true;
-        gamePlay.takeTurn(gamePlay.activePlayer);
-    }
-
-    
-
-
-}
