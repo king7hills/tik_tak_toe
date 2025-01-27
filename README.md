@@ -13,4 +13,11 @@ I originally created the gameplay module as a function. I then converted to have
 start game button. The button appears after each game and hides during gameplay.
 
 Styling is geared towards mobile use, but works well on Desktop too.
+
+INSTRUCTIONS:
 To play on mobile, simply rotate your phone.
+
+Player names are editable by clicking directly on the name.
+Players may also choose their own color by clicking the color circle and selecting a new color.
+
+Start a new game by clicking the Start Game button.
